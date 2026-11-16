@@ -1,0 +1,263 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- =========================================
+     1. PAGE HEADER
+========================================= -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h1>
+        {% if mode == 'examiner' %}
+            My slots
+        {% else %}
+            Available slots
+        {% endif %}
+    </h1>
+
+    {% if mode == 'examiner' and slot_creation_open == '1' %}
+
+        <a class="btn btn-primary"
+           href="{{ url_for('create_slot') }}">
+            Create slot
+        </a>
+
+    {% endif %}
+
+</div>
+
+
+<!-- =========================================
+     2. STUDENT SEARCH FORM
+========================================= -->
+
+{% if mode == 'student' %}
+
+<form class="d-flex my-3"
+      method="GET">
+
+    <input
+        class="form-control me-2"
+        type="text"
+        name="q"
+        value="{{ q }}"
+        placeholder="Search examination"
+    >
+
+    <button class="btn btn-primary" type="submit">
+        Search
+    </button>
+
+</form>
+
+{% endif %}
+
+
+<!-- =========================================
+     3. SLOTS TABLE
+========================================= -->
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="table table-hover mb-0">
+
+            <!-- TABLE HEADINGS -->
+
+            <thead>
+
+                <tr>
+
+                    <th>Exam</th>
+
+                    {% if mode == 'student' %}
+
+                        <th>Course</th>
+                        <th>Examiner</th>
+
+                    {% endif %}
+
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Seats</th>
+                    <th>Status</th>
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <!-- TABLE DATA -->
+
+            <tbody>
+
+                {% for s in rows %}
+
+                <tr>
+
+                    <!-- Examination Name -->
+
+                    <td>
+                        {{ s.exam }}
+                    </td>
+
+
+                    <!-- Student-specific Information -->
+
+                    {% if mode == 'student' %}
+
+                        <td>
+                            {{ s.code }}
+                        </td>
+
+                        <td>
+                            {{ s.examiner }}
+                        </td>
+
+                    {% endif %}
+
+
+                    <!-- Slot Date -->
+
+                    <td>
+                        {{ s.day }}
+                    </td>
+
+
+                    <!-- Slot Time -->
+
+                    <td>
+                        {{ s.start }} – {{ s.end }}
+                    </td>
+
+
+                    <!-- Seat Availability -->
+
+                    <td>
+                        {{ s.booked }}/{{ s.capacity }}
+                    </td>
+
+
+                    <!-- Slot Status -->
+
+                    <td>
+
+                        {% if s.status == 'Available' %}
+
+                            <span class="badge text-bg-success">
+                                Available
+                            </span>
+
+                        {% elif s.status == 'Full' %}
+
+                            <span class="badge text-bg-danger">
+                                Full
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge text-bg-secondary">
+                                {{ s.status }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- ACTION BUTTONS -->
+
+                    <td>
+
+                        <!-- Student Booking Action -->
+
+                        {% if mode == 'student' and booking_open == '1' %}
+
+                            <form method="POST"
+                                  action="{{ url_for('book', sid=s.id) }}"
+                                  class="m-0">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-primary">
+                                    Book
+                                </button>
+
+                            </form>
+
+
+                        <!-- Examiner Edit and Delete Actions -->
+
+                        {% elif mode == 'examiner' %}
+
+                            <div class="action-buttons">
+
+                                <!-- Edit Button -->
+
+                                <a
+                                    href="{{ url_for('edit_slot', sid=s.id) }}"
+                                    class="btn btn-sm btn-outline-primary action-btn">
+
+                                    Edit
+
+                                </a>
+
+
+                                <!-- Delete Button -->
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_slot', sid=s.id) }}"
+                                    class="m-0">
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-danger action-btn"
+                                        onclick="return confirm('Are you sure you want to delete this slot?')">
+
+                                        Delete
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <!-- EMPTY TABLE MESSAGE -->
+
+                <tr>
+
+                    <td
+                        colspan="{% if mode == 'student' %}8{% else %}6{% endif %}"
+                        class="text-center p-4 text-secondary">
+
+                        No slots found.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

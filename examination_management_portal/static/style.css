@@ -1,0 +1,95 @@
+
+/* =========================================
+   1. GENERAL PAGE STYLING
+========================================= */
+
+body {
+    background: #f5f7fb;
+    color: #1d2939;
+}
+
+
+/* =========================================
+   2. NAVIGATION BAR
+========================================= */
+
+.navbar {
+    box-shadow: 0 2px 8px #17365d22;
+}
+
+.nav-link {
+    padding: 0.25rem 0.35rem;
+}
+
+
+/* =========================================
+   3. CARDS
+========================================= */
+
+.card {
+    border: 0;
+    box-shadow: 0 5px 20px #1018280b;
+    border-radius: 14px;
+}
+
+
+/* =========================================
+   4. HOME PAGE HERO SECTION
+========================================= */
+
+.hero {
+    background: linear-gradient(120deg, #123e80, #2866c7);
+    color: white;
+    border-radius: 20px;
+    padding: 3rem;
+}
+
+
+/* =========================================
+   5. DASHBOARD METRICS
+========================================= */
+
+.metric {
+    font-size: 2rem;
+    font-weight: 750;
+}
+
+
+/* =========================================
+   6. TABLE STYLING
+========================================= */
+
+.table {
+    vertical-align: middle;
+}
+
+
+/* =========================================
+   7. FORM STYLING
+========================================= */
+
+.form-label {
+    font-weight: 600;
+}
+
+
+/* =========================================
+   8. ACTION BUTTONS
+========================================= */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 75px;
+    min-width: 75px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.action-buttons form {
+    margin: 0;
+}

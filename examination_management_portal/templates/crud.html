@@ -1,0 +1,472 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<h1 class="mb-4">Manage {{ kind }}</h1>
+
+<div class="row g-3">
+
+    <!-- LEFT SIDE: CREATE / EDIT FORM -->
+    <div class="col-lg-5">
+
+        <div class="card p-4">
+
+            <h4 class="mb-3">
+                {{ 'Edit' if edit else 'Create' }}
+                {{ 'examination' if kind == 'exams' else kind[:-1] }}
+            </h4>
+
+            <form method="post">
+
+                <input type="hidden" name="action" value="save">
+
+                {% if edit %}
+                    <input
+                        type="hidden"
+                        name="id"
+                        value="{{ edit.id }}"
+                    >
+                {% endif %}
+
+
+                <!-- ================================= -->
+                <!-- COURSE FORM -->
+                <!-- ================================= -->
+
+                {% if kind == 'courses' %}
+
+                    <label class="form-label">Course Code</label>
+
+                    <input
+                        type="text"
+                        class="form-control mb-2"
+                        name="code"
+                        value="{{ edit.code if edit else '' }}"
+                        required
+                    >
+
+
+                    <label class="form-label">Course Name</label>
+
+                    <input
+                        type="text"
+                        class="form-control mb-2"
+                        name="name"
+                        value="{{ edit.name if edit else '' }}"
+                        required
+                    >
+
+
+                    <label class="form-label">Description</label>
+
+                    <textarea
+                        class="form-control mb-2"
+                        name="description"
+                    >{{ edit.description if edit else '' }}</textarea>
+
+
+                    <label class="form-label">Status</label>
+
+                    <select class="form-select mb-3" name="status">
+
+                        <option
+                            value="Active"
+                            {% if edit and edit.status == 'Active' %}selected{% endif %}
+                        >
+                            Active
+                        </option>
+
+                        <option
+                            value="Inactive"
+                            {% if edit and edit.status == 'Inactive' %}selected{% endif %}
+                        >
+                            Inactive
+                        </option>
+
+                    </select>
+
+
+                <!-- ================================= -->
+                <!-- EXAMINATION FORM -->
+                <!-- ================================= -->
+
+                {% elif kind == 'exams' %}
+
+                    <label class="form-label">Course</label>
+
+                    <select
+                        class="form-select mb-2"
+                        name="course_id"
+                        required
+                    >
+
+                        {% for c in courses %}
+
+                            <option
+                                value="{{ c.id }}"
+                                {% if edit and edit.course_id == c.id %}selected{% endif %}
+                            >
+                                {{ c.code }} — {{ c.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <label class="form-label">Exam Name</label>
+
+                    <input
+                        type="text"
+                        class="form-control mb-2"
+                        name="name"
+                        value="{{ edit.name if edit else '' }}"
+                        required
+                    >
+
+
+                    <label class="form-label">Examination Type</label>
+
+                    <select class="form-select mb-2" name="type">
+
+                        {% for t in ['Viva', 'Practical', 'Project Demo', 'Assessment'] %}
+
+                            <option
+                                value="{{ t }}"
+                                {% if edit and edit.type == t %}selected{% endif %}
+                            >
+                                {{ t }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <!-- Duration and Maximum Marks -->
+
+                    <div class="row">
+
+                        <div class="col">
+
+                            <label class="form-label">Duration (Minutes)</label>
+
+                            <input
+                                type="number"
+                                class="form-control mb-2"
+                                name="duration"
+                                value="{{ edit.duration if edit else 30 }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="col">
+
+                            <label class="form-label">Maximum Marks</label>
+
+                            <input
+                                type="number"
+                                step="0.5"
+                                class="form-control mb-2"
+                                name="max_marks"
+                                value="{{ edit.max_marks if edit else 100 }}"
+                                required
+                            >
+
+                        </div>
+						
+						<div class="col">
+						
+							<label class="form-label">Number of Slots</label>
+							
+							<input
+								type="number"
+								class="form-control mb-2"
+								name="no_of_slots"
+								value="{{ edit.no_of_slots if edit else 10 }}"
+								min="1"
+								required
+							>
+						</div>
+
+                    </div>
+
+
+                    <!-- Examination Date Windows -->
+
+                    {% for field, label in [
+                        ('slot_start', 'Slot Creation Start'),
+                        ('slot_end', 'Slot Creation End'),
+                        ('book_start', 'Booking Start'),
+                        ('book_end', 'Booking End')
+                    ] %}
+
+                        <label class="form-label">{{ label }}</label>
+
+                        <input
+                            type="datetime-local"
+                            class="form-control mb-2"
+                            name="{{ field }}"
+                            value="{{ edit[field]|replace(' ', 'T') if edit else '' }}"
+                            required
+                        >
+
+                    {% endfor %}
+
+
+                    <!-- Examination Status -->
+
+                    <label class="form-label">Status</label>
+
+                    <select class="form-select mb-2" name="status">
+
+                        {% for s in [
+                            'Draft',
+                            'Slot Creation',
+                            'Booking Open',
+                            'Closed',
+                            'Completed'
+                        ] %}
+
+                            <option
+                                value="{{ s }}"
+                                {% if edit and edit.status == s %}selected{% endif %}
+                            >
+                                {{ s }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <label class="form-label">Description</label>
+
+                    <textarea
+                        class="form-control mb-3"
+                        name="description"
+                    >{{ edit.description if edit else '' }}</textarea>
+
+
+                <!-- ================================= -->
+                <!-- RUBRIC FORM -->
+                <!-- ================================= -->
+
+                {% else %}
+
+                    <label class="form-label">Examination</label>
+
+                    <select
+                        class="form-select mb-2"
+                        name="exam_id"
+                        required
+                    >
+
+                        {% for e in exams %}
+
+                            <option
+                                value="{{ e.id }}"
+                                {% if edit and edit.exam_id == e.id %}selected{% endif %}
+                            >
+                                {{ e.name }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <label class="form-label">Assessment Criterion</label>
+
+                    <input
+                        type="text"
+                        class="form-control mb-2"
+                        name="criterion"
+                        value="{{ edit.criterion if edit else '' }}"
+                        required
+                    >
+
+
+                    <label class="form-label">Maximum Marks</label>
+
+                    <input
+                        type="number"
+                        step="0.5"
+                        class="form-control mb-2"
+                        name="max_marks"
+                        value="{{ edit.max_marks if edit else 10 }}"
+                        required
+                    >
+
+
+                    <label class="form-label">Weightage</label>
+
+                    <input
+                        type="number"
+                        step="0.1"
+                        class="form-control mb-2"
+                        name="weightage"
+                        value="{{ edit.weightage if edit else 100 }}"
+                    >
+
+
+                    <label class="form-label">Description</label>
+
+                    <textarea
+                        class="form-control mb-3"
+                        name="description"
+                    >{{ edit.description if edit else '' }}</textarea>
+
+                {% endif %}
+
+
+                <!-- FORM BUTTONS -->
+
+                <button type="submit" class="btn btn-primary">
+                    Save
+                </button>
+
+                {% if edit %}
+
+                    <a
+                        class="btn btn-light"
+                        href="{{ url_for('admin_crud', kind=kind) }}"
+                    >
+                        Cancel Edit
+                    </a>
+
+                {% endif %}
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- RIGHT SIDE: EXISTING RECORDS TABLE -->
+    <!-- ================================= -->
+
+    <div class="col-lg-7">
+
+        <div class="card">
+
+            <div class="table-responsive">
+
+                <table class="table mb-0">
+
+                    <!-- TABLE HEADER -->
+
+                    <thead>
+
+                        <tr>
+
+                            {% if rows %}
+
+                                {% for key in rows[0].keys() %}
+
+                                    <th>
+                                        {{ key.replace('_', ' ') | title }}
+                                    </th>
+
+                                {% endfor %}
+
+                            {% endif %}
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- TABLE BODY -->
+
+                    <tbody>
+
+                        {% for r in rows %}
+
+                            <tr>
+
+                                {% for key in r.keys() %}
+
+                                    <td>
+                                        {{ r[key] }}
+                                    </td>
+
+                                {% endfor %}
+
+
+                                <!-- EDIT AND DELETE BUTTONS -->
+
+                                <td class="text-nowrap">
+
+                                    <a
+                                        class="btn btn-sm btn-outline-primary"
+                                        href="{{ url_for('admin_crud', kind=kind, edit=r.id) }}"
+                                    >
+                                        Edit
+                                    </a>
+
+
+                                    <form
+                                        method="post"
+                                        class="d-inline"
+                                    >
+
+                                        <input
+                                            type="hidden"
+                                            name="action"
+                                            value="delete"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="id"
+                                            value="{{ r.id }}"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete this record?')"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="100%" class="text-center">
+                                    No records available.
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

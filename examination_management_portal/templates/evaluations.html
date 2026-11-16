@@ -1,0 +1,159 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- =========================================
+     1. PAGE HEADER
+========================================= -->
+
+<div class="mb-4">
+
+    <h1>Booked Students and Evaluations</h1>
+
+    <p class="text-secondary">
+        View booked students and manage their examination evaluations.
+    </p>
+
+</div>
+
+
+<!-- =========================================
+     2. EVALUATION TABLE
+========================================= -->
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="table table-hover mb-0">
+
+            <!-- TABLE HEADINGS -->
+
+            <thead>
+
+                <tr>
+                    <th>Student</th>
+                    <th>Exam</th>
+                    <th>Exam Date / Start Time</th>
+                    <th>Booking</th>
+                    <th>Evaluation</th>
+                </tr>
+
+            </thead>
+
+
+            <!-- TABLE DATA -->
+
+            <tbody>
+
+                {% for r in rows %}
+
+                <tr>
+
+                    <!-- Student Name -->
+
+                    <td>
+                        <strong>{{ r.student }}</strong>
+                    </td>
+
+
+                    <!-- Examination Name -->
+
+                    <td>
+                        {{ r.exam }}
+                    </td>
+
+
+                    <!-- Examination Date and Time -->
+
+                    <td>
+                        {{ r.day }} {{ r.start }}
+                    </td>
+
+
+                    <!-- Booking Status -->
+
+                    <td>
+
+                        {% if r.status == 'Booked' %}
+
+                            <span class="badge text-bg-success">
+                                Booked
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge text-bg-secondary">
+                                {{ r.status }}
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- Evaluation Action -->
+
+                    <td>
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <!-- Evaluate or Edit Evaluation -->
+
+                            <a
+                                class="btn btn-sm btn-primary"
+                                href="{{ url_for('evaluate', bid=r.bid) }}"
+                            >
+
+                                {% if r.evid %}
+                                    Edit Evaluation
+                                {% else %}
+                                    Evaluate
+                                {% endif %}
+
+                            </a>
+
+
+                            <!-- Published Status -->
+
+                            {% if r.published %}
+
+                                <span class="badge text-bg-success">
+                                    Published
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <!-- EMPTY TABLE MESSAGE -->
+
+                <tr>
+
+                    <td colspan="5" class="text-center p-4 text-secondary">
+
+                        No booked students yet.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

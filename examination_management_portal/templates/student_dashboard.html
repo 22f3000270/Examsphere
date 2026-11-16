@@ -1,0 +1,270 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    Student Dashboard
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= PAGE HEADER ================= -->
+
+<div class="mb-4">
+
+    <h1 class="fw-bold">
+        Student Dashboard
+    </h1>
+
+    <p class="text-secondary">
+        Find examinations, manage your bookings and review
+        your published results.
+    </p>
+
+</div>
+
+
+<!-- ================= AVAILABLE EXAMINATIONS ================= -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h3 class="fw-bold mb-0">
+        Available Examinations
+    </h3>
+
+    <a
+        class="btn btn-primary"
+        href="{{ url_for('slots') }}"
+    >
+        Find Slots
+    </a>
+
+</div>
+
+
+<!-- Examination Cards -->
+
+<div class="row g-3 mb-5">
+
+    {% for e in exams %}
+
+        <div class="col-md-6 col-xl-4">
+
+            <div class="card p-3 h-100 shadow-sm">
+
+                <!-- Course Information -->
+                <div class="small text-primary fw-semibold mb-2">
+                    {{ e.code }} · {{ e.type }}
+                </div>
+
+                <!-- Exam Name -->
+                <h5 class="fw-bold">
+                    {{ e.name }}
+                </h5>
+
+                <!-- Exam Details -->
+                <p class="text-secondary mb-2">
+                    {{ e.course }}
+                    ·
+                    {{ e.duration }} minutes
+                    ·
+                    Maximum {{ e.max_marks }} marks
+                </p>
+
+                <!-- Exam Description -->
+                <p class="mb-3">
+                    {{ e.description }}
+                </p>
+
+                <!-- Available Seats -->
+                <div class="mt-auto">
+
+                    <span class="badge text-bg-light border">
+                        {{ e.avail }} Available Seats
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="col-12">
+
+            <div class="alert alert-info">
+                No examinations are currently listed.
+                Please check again later.
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- ================= BOOKING HISTORY ================= -->
+
+<div class="card shadow-sm">
+
+    <!-- Card Header -->
+    <div class="card-header bg-white p-3">
+
+        <h4 class="fw-bold mb-0">
+            My Booking History
+        </h4>
+
+        <small class="text-secondary">
+            Track your examination bookings and results.
+        </small>
+
+    </div>
+
+
+    <!-- Booking History Table -->
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+
+                <tr>
+                    <th>Examination</th>
+                    <th>Date & Time</th>
+                    <th>Examiner</th>
+                    <th>Status</th>
+                    <th>Action / Result</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for b in bookings %}
+
+                    <tr>
+
+                        <!-- Exam Name -->
+                        <td class="fw-semibold">
+                            {{ b.exam }}
+                        </td>
+
+                        <!-- Booking Date and Time -->
+                        <td>
+                            {{ b.day }}
+                            <br>
+                            <small class="text-secondary">
+                                {{ b.start }} – {{ b.end }}
+                            </small>
+                        </td>
+
+                        <!-- Examiner -->
+                        <td>
+                            {{ b.examiner }}
+                        </td>
+
+                        <!-- Booking Status -->
+                        <td>
+
+                            {% if b.status == 'Booked' %}
+
+                                <span class="badge text-bg-success">
+                                    Booked
+                                </span>
+
+                            {% elif b.status == 'Cancelled' %}
+
+                                <span class="badge text-bg-danger">
+                                    Cancelled
+                                </span>
+
+                            {% elif b.status == 'Completed' %}
+
+                                <span class="badge text-bg-primary">
+                                    Completed
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge text-bg-secondary">
+                                    {{ b.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Actions and Results -->
+                        <td>
+
+                            {% if b.status == 'Booked' %}
+
+                                <form
+                                    method="post"
+                                    action="{{ url_for('cancel', bid=b.id) }}"
+                                    onsubmit="return confirm('Are you sure you want to cancel this booking?');"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-danger"
+                                    >
+                                        Cancel Booking
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+
+                            {% if b.published %}
+
+                                <a
+                                    class="btn btn-sm btn-outline-primary mt-1"
+                                    href="{{ url_for('result', bid=b.id) }}"
+                                >
+                                    View Result
+                                </a>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center text-secondary py-4">
+
+                            You have not made any examination bookings yet.
+
+                            <br>
+
+                            <a
+                                href="{{ url_for('slots') }}"
+                                class="btn btn-sm btn-primary mt-3"
+                            >
+                                Explore Available Slots
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- ================= END OF STUDENT DASHBOARD ================= -->
+
+{% endblock %}

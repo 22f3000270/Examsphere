@@ -1,0 +1,137 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+
+<section class="hero mb-4">
+
+    <!-- Tagline -->
+    <p class="text-uppercase small fw-semibold">
+        Schedule · Register · Assess · Succeed
+    </p>
+
+    <!-- Main Heading -->
+    <h1 class="display-5 fw-bold">
+        Welcome to ExamSphere.
+    </h1>
+
+    <!-- Description -->
+    <p class="lead col-lg-8">
+        A unified examination and assessment management platform
+        designed to simplify course management, exam scheduling,
+        examiner assignments, student bookings and evaluations.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="mt-4">
+
+        <a
+            class="btn btn-light btn-lg me-2"
+            href="{{ url_for('login') }}"
+        >
+            Sign In
+        </a>
+
+        <a
+            class="btn btn-outline-light btn-lg"
+            href="{{ url_for('register', role='student') }}"
+        >
+            Create Student Account
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- ================= ROLE-BASED FEATURES ================= -->
+
+<section class="mt-5">
+
+    <div class="text-center mb-4">
+
+        <h2 class="fw-bold">
+            One Platform, Three Roles
+        </h2>
+
+        <p class="text-secondary">
+            Everything needed to manage the examination process
+            from start to finish.
+        </p>
+
+    </div>
+
+    <div class="row g-3">
+
+        <!-- Administrator Card -->
+        <div class="col-md-4">
+
+            <div class="card p-4 h-100 shadow-sm">
+
+                <h4 class="fw-bold">
+                    Administrator
+                </h4>
+
+                <p class="text-secondary">
+                    Manage courses, examinations, evaluation rubrics,
+                    users, examiner assignments and booking windows.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Examiner Card -->
+        <div class="col-md-4">
+
+            <div class="card p-4 h-100 shadow-sm">
+
+                <h4 class="fw-bold">
+                    Examiner
+                </h4>
+
+                <p class="text-secondary">
+                    Create assigned examination slots, view booked
+                    students, conduct assessments and evaluate
+                    performance using rubrics.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Student Card -->
+        <div class="col-md-4">
+
+            <div class="card p-4 h-100 shadow-sm">
+
+                <h4 class="fw-bold">
+                    Student
+                </h4>
+
+                <p class="text-secondary">
+                    Explore available examinations, book suitable
+                    time slots, attend assessments and view
+                    published results.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= END OF HOME PAGE ================= -->
+
+{% endblock %}
